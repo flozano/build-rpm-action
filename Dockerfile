@@ -5,15 +5,9 @@ RUN yum groupinstall -y "Development Tools" && \
         kernel-devel \
         kernel-headers
 
-ENV PATH /root/.nimble/bin:$PATH
-RUN curl https://nim-lang.org/choosenim/init.sh -sSf > init.sh
-RUN sh init.sh -y \
-    && choosenim stable
-COPY tools /tools
-RUN cd /tools && \
-    nimble build -Y && \
-    cp -p bin/* /
-
+ENV PATH /usr/local/go/bin:$PATH
+RUN curl https://go.dev/dl/go1.19.5.linux-amd64.tar.gz --output /tmp/go.tar.gz --silent -L
+RUN tar -C /usr/local -xzf /tmp/go.tar.gz
 COPY template.spec /
 COPY entrypoint.sh /usr/local/bin/
 ENTRYPOINT ["entrypoint.sh"]
